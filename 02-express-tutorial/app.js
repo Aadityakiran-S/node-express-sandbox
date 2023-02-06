@@ -1,45 +1,27 @@
-const http = require("http");
-const { readFileSync } = require("fs");
+const express = require('express');
+const app = express();
 
-//Get all files
-const homePage = readFileSync("./navbar-app/index.html");
-const homeStyles = readFileSync("./navbar-app/styles.css");
-const homeImage = readFileSync("./navbar-app/logo.svg");
-const homeLogic = readFileSync("./navbar-app/browser-app.js");
+app.get("/", (req, res) => {
+    res.status(200).send("Home Page"); 
+})
 
-const server = http.createServer((req, res) => {
-  const url = req.url;
-  res.writeHead(200, { "content-type": "text/html" });
-  console.log(url);
-  //This is the home page
-  if (url === "/") {
-    res.write(homePage);
-  }
-  //About page
-  else if (url === "/about") {
-    res.write("<h1>This is our about page</h1>");
-  } 
-  //styles-css
-  else if (url === "/styles.css") {
-    res.writeHead(200, { "content-type": "text/css" });
-    res.write(homeStyles);
-  }
-  //logo
-  else if (url === "/logo.svg") {
-    res.writeHead(200, { "content-type": "image/svg+xml" });
-    res.write(homeImage);
-  }
-  //logic for the site
-  else if (url === "/browser-app.js") {
-    res.writeHead(200, { "content-type": "text/javascript" });
-    res.write(homeLogic);
-  }
-  //Return 404 error
-  else {
-    res.writeHead(404, { "content-type": "text/html" });
-    res.write("<h1>Bad Request!</h1>");
-  }
-  res.end();
-});
+app.get("/about", (req, res) => {
+    res.status(200).send("About page");
+})
 
-server.listen(3000);
+app.all('*', (req, res) => {
+    res.status(404).send('<h1>Requested resource not found</h1>');
+})
+
+app.listen(3000, () => {
+    console.log("server is listening on port 3000");
+})
+
+//app.get
+//app.post
+//app.put
+//app.delete
+//app.all
+//app.use
+//app.listen
+//app.listen  
