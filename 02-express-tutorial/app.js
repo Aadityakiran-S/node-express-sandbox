@@ -1,21 +1,16 @@
 const express = require('express');
-const path = require('path');
+const {products, people} = require('./data');
 const app = express();
 
-// setup static and middleware (will cover later)   
-app.use(express.static('./public'));
+app.get('/', (req, res) => {
+    res.send("Welcome to home page");
+})
 
-// app.get('/', (req, res) => {
-//     res.sendFile(path.resolve(__dirname, './navbar-app/index.html')); 
-//     adding to static assets
-//     Server side rendering
-// });
-
-app.all('*', (req, res) => {
-    res.status(404).send('<h1>Bad Request!</h1>');
-});
-
+app.get('/People', (req, res) => {
+    // res.json([{name : "John"}, {name: "Susan"}]);
+    res.json(products);
+})
 
 app.listen(3000, () => {
-    console.log('server is listening on port 3000...');
-});
+    console.log('Listening on port 3000...');
+})

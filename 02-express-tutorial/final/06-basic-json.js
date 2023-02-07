@@ -1,10 +1,16 @@
-const express = require('express')
-const app = express()
-const { products } = require('./data')
+const express = require('express');
+const {products, people} = require('./data');
+const app = express();
+
 app.get('/', (req, res) => {
-  res.json(products)
+    res.send("Welcome to home page");
 })
 
-app.listen(5000, () => {
-  console.log('Server is listening on port 5000....')
+app.get('/People', (req, res) => {
+    // res.json([{name : "John"}, {name: "Susan"}]);
+    res.json(products);
+})
+
+app.listen(3000, () => {
+    console.log('Listening on port 3000...');
 })
