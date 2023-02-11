@@ -1,68 +1,32 @@
 const express = require('express');
-const { products } = require('./data');
 const app = express();
+const logger = require('./logger.js');
+const authorize = require('./authorize.js');
 
-app.get('/', (req, res) => {
-    res.send('<h1>Home Page</h1><a href ="api/products">products</a>');
+app.use('/api', [authorize, logger]); //app.use() sets up middleware
+//Make sure you call it before you call get otherwise won't work
+//NodeJS, order is important
+//MIDDLEWARE FIRST  
+// app.use(express.static('./public'));
+
+//req => middleware => res
+app.get('/', logger, (req, res) => {
+    // logger(); //Do not call this function here, it's not required. CRAZY syntax, I know
+    res.send('<h1>Home Page</h1>');
+});
+
+//Need to add logger since it only automatically adds to /api paths
+app.get('/about', logger, (req, res) => {
+    res.send('<h1>About Page</h1>');
 })
-//Basic API route with no parameters
+
+//logger is applied to all paths that come after '/api' using .use() func
 app.get('/api/products', (req, res) => {
-    const newProducts = products.map((product) => {
-        const { id, name, image } = product;
-        return { id, name, image }
-    })
-
-    res.json(newProducts);
+    res.send('<h1>Products</h1>');
 })
-//Basic route Parameters
-app.get('/api/products/:productID', (req, res) => {
-    console.log(req.params);
 
-    const { productID } = req.params;
-    const singleProduct = products.find(
-        (product) => product.id === Number(productID));
-
-    //Given Product ID doesn't exist
-    if (!singleProduct) {
-        res.status(404).send(`Product with ID ${productID} DNE`);
-    }
-    else {
-        res.json(singleProduct);
-    }
-})
-//More complicated route params
-app.get('/api/products/:productID/reviews/:reviewID', (req, res) =>{
-    console.log(req.params);
-    res.send(`Product ID: ${req.params.productID} \n 
-    Review ID: ${req.params.reviewID}`);
-})
-//Query string parameters
-app.get('/api/v1/query', (req, res) => {
-    const {search, limit} = req.query;
-    console.log(req.query);
-    //#region  Spheal on deep copy and spread operator
-    //Spread operator creates a deep copy of the previous array.
-    //Meaning that if you change the array 'sortedProducts' then
-    //no change will occur to the prodcts array. BUT if you distort
-    //an object inside sortedProducts, that will reflect in products as well
-    //since only the array is cloned and not the objects within them
-    //#endregion
-    let sortedProducts = [...products]; 
-    if(search){ //If search exists in query
-        sortedProducts = sortedProducts.filter((product) => {
-            return product.name.startsWith(search);
-        })
-    }
-    if(limit){
-        sortedProducts = sortedProducts.slice(0, Number(limit));
-    }
-    if(sortedProducts.length == 0){
-        // res.status(200).send(`Your query didn't match any results`);
-        res.status(200).json({succuss: true, data: []});
-        console.log('No products to return');
-        return;
-    }
-    res.status(200).json(sortedProducts);
+app.get('/api/items', (req, res) => {
+    res.send(`<h1>Items with user ${JSON.stringify(req.user.name)}</h1>`);
 })
 
 app.listen(3000, () => {
