@@ -1,9 +1,13 @@
 const express = require('express');
-const app = express();
+const morgan = require('morgan');
 const logger = require('../logger.js');
 const authorize = require('../authorize.js');
 
-app.use('/api', [authorize, logger]); //app.use() sets up middleware
+const app = express();
+
+
+// app.use('/api', [authorize, logger]); //app.use() sets up middleware
+app.use(morgan('tiny')); 
 //Make sure you call it before you call get otherwise won't work
 //NodeJS, order is important
 //MIDDLEWARE FIRST  
