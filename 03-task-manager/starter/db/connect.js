@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const connectString = 'mongodb+srv://aadityakiran_s:MongoDB123@nodeexpressprojects.makop0m.mongodb.net/?retryWrites=true&w=majority';
+const connectString = '';
 
 mongoose.connect(connectString,{
     useNewUrlParser: true,
