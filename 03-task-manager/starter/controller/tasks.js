@@ -1,3 +1,5 @@
+const Task = require('../models/Task.js');
+
 const getAllTasks = (req, res) => {
     res.send('Get all tasks');
 }
