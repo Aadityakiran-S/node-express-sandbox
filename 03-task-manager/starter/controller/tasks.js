@@ -1,11 +1,16 @@
-const Task = require('../models/Task.js');
+const Task_DBSchema = require('../models/Task.js');
 
 const getAllTasks = (req, res) => {
     res.send('Get all tasks');
 }
 
-const createTask = (req, res) => {
-    res.json(req.body);
+const createTask = async (req, res) => {
+    try {
+        const task = await Task_DBSchema.create(req.body);
+        res.status(200).json({ task });
+    } catch (error) {
+        res.status(500).json({ message: error });
+    }
 }
 
 const getTask = (req, res) => {
@@ -26,8 +31,8 @@ const deleteTask = (req, res) => {
     res.send(`Deleted task with ID ${params.id}`);
 }
 
-module.exports = { 
-    getAllTasks, 
+module.exports = {
+    getAllTasks,
     createTask,
     getTask,
     updateTask,
