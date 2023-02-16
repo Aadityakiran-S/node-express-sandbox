@@ -12,22 +12,24 @@ app.use(express.json());
 //Basic welcome message
 app.get('/hello', (req, res) => {
     res.status(200).send('<h1>Task Manager App</h1>');
-})
+    app.get('/hello', (req, res) => {
+        res.status(200).send('<h1>Task Manager App</h1>');
+    })
 
-//Using this route for the rest of the APIs: Aso a middleware
-app.use('/api/v1/tasks', tasks);
+    //Using this route for the rest of the APIs: Aso a middleware
+    app.use('/api/v1/tasks', tasks);
 
-const start = async (mongoURI) => {
-    try {
-        await connectDB(mongoURI);
-        app.listen(port, () => {
-            console.log(`Server listening on port ${port}...`);
-        });
+    const start = async (mongoURI) => {
+        try {
+            await connectDB(mongoURI);
+            app.listen(port, () => {
+                console.log(`Server listening on port ${port}...`);
+            });
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
-    catch (error) {
-        console.log(error);
-    }
-}
 
-start(process.env.MONGO_URI);
+    start(process.env.MONGO_URI);
 
