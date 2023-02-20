@@ -1,7 +1,13 @@
+const Task = require('../models/Task.js');
 const Task_DBSchema = require('../models/Task.js');
 
-const getAllTasks = (req, res) => {
-    res.send('Get all tasks');
+const getAllTasks = async (req, res) => {
+    try {
+        let task = await Task_DBSchema.find({});
+        res.status(200).json({ task });
+    } catch (error) {
+        res.status(500).json({ error });
+    }
 }
 
 const createTask = async (req, res) => {
@@ -13,22 +19,46 @@ const createTask = async (req, res) => {
     }
 }
 
-const getTask = (req, res) => {
-    const params = req.params;
-    console.log(params);
-    res.send(`Task fetched with ID ${params.id}`);
+const getTask = async (req, res) => {
+    try {
+        const { id: taskID } = req.params;
+        const task = await Task_DBSchema.findOne({ _id: taskID });
+        if (!task) {
+            return res.status(404).json({ message: `Task with ID ${taskID} DNE` });
+        }
+        res.status(200).json({ task });
+    } catch (error) {
+        res.status(500).json({ error });
+    }
 }
 
-const updateTask = (req, res) => {
-    const params = req.params;
-    console.log(params);
-    res.send(`Updated task with ID ${params.id}`);
+const updateTask = async (req, res) => {
+    try {
+        const { id: taskID } = req.params;
+        //Options object should be set to run validators to make sure updation follows validtion rules earlier set and also new: true sends back response as updated value not old one
+        const task = await Task_DBSchema.findOneAndUpdate({ _id: taskID }, req.body, {
+            new: true, runValidators: true
+        });
+        if (!task) {
+            return res.status(404).json({ msg: `Task with ID: ${taskID} DNE` });
+        }
+        res.status(200).json({ id: taskID, body: req.body });
+    } catch (error) {
+        res.status(500).json({ error });
+    }
 }
 
-const deleteTask = (req, res) => {
-    const params = req.params;
-    console.log(params);
-    res.send(`Deleted task with ID ${params.id}`);
+const deleteTask = async (req, res) => {
+    try {
+        const { id: taskID } = req.params;
+        const task = await Task_DBSchema.findOneAndDelete({ _id: taskID });
+        if (!task) {
+            return res.status(404).json({ message: `Task with ID: ${taskID} DNE` });
+        }
+        res.status(200).json({ task });
+    } catch (error) {
+        res.status(500).json({ error });
+    }
 }
 
 module.exports = {
