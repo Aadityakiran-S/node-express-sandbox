@@ -48,6 +48,25 @@ const updateTask = async (req, res) => {
     }
 }
 
+//This API resets all the other fileds to default values.
+const editTask = async (req, res) => {
+    try {
+        const { id: taskID } = req.params;
+        const task = await Task_DBSchema.findOneAndUpdate({ _id: taskID }, req.body, {
+            new: true, runValidators: true, overwrite: true,
+        })
+
+        if (!task) {
+            return res.status(404).json({ msg: `No task with ID ${taskID}` });
+        }
+
+        res.status(200).json({ task });
+    }
+    catch (error) {
+        res.status(500).json({ msg: error });
+    }
+}
+
 const deleteTask = async (req, res) => {
     try {
         const { id: taskID } = req.params;
@@ -66,5 +85,6 @@ module.exports = {
     createTask,
     getTask,
     updateTask,
-    deleteTask
+    deleteTask,
+    editTask
 };
