@@ -54,6 +54,7 @@ const editTask = async (req, res) => {
         const { id: taskID } = req.params;
         const task = await Task_DBSchema.findOneAndUpdate({ _id: taskID }, req.body, {
             new: true, runValidators: true, overwrite: true,
+            //Mongoose by default has the same behaviour for PUT and PATCH but setting overwrite: will differentiate put from patch by causing overwrite for the operation.
         })
 
         if (!task) {
