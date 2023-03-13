@@ -7,17 +7,11 @@ require('dotenv').config();
 
 const port = 3000;
 
-//#region Middleware
-
 //Setting up static files
 app.use(express.static('./public'));
 
 //JSON parser middleware to converte from JSON for all APIs
 app.use(express.json());
-
-
-
-//#endregion
 
 //Using this route for the rest of the APIs: Aso a middleware
 app.use('/api/v1/tasks', tasks);
